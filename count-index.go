@@ -21,7 +21,7 @@ func (p *CountPoint) String() string {
 // NewCountIndex creates an index which counts the points in each cell.
 func NewCountIndex(resolution Meters) *CountIndex {
 	newCounter := func() interface{} {
-		return &singleValueAccumulatingCounter{}
+		return &topValueAccumulatingCounter{}
 	}
 
 	return &CountIndex{newGeoIndex(resolution, newCounter), make(map[string]Point)}

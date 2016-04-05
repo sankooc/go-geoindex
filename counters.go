@@ -114,6 +114,53 @@ type accumulatingCounter interface {
 	Minus(c accumulatingCounter)
 }
 
+type topValueAccumulatingCounter struct {
+	lat float64
+	lng float64
+	count  int
+}
+
+func (c *topValueAccumulatingCounter) Add(point Point) {
+	c.lat = point.Lat()
+	c.lng = point.Lon()
+	c.Id  = point.Id()
+	c.count++
+}
+
+func (c *topValueAccumulatingCounter) Remove(point Point) {
+	// c.latSum -= point.Lat()
+	// c.lonSum -= point.Lon()
+	c.count--
+}
+
+func (c *topValueAccumulatingCounter) Point() *CountPoint {
+	if c.count > 0 {
+		return &CountPoint{&GeoPoint{c.Id, c.lat , c.lng}, c.count}
+	}
+	return nil
+}
+
+func (c1 *topValueAccumulatingCounter) Plus(value accumulatingCounter) {
+	c2 := value.(*topValueAccumulatingCounter)
+	// c1.latSum += c2.latSum
+	// c1.lonSum += c2.lonSum
+	c1.count += c2.count
+}
+
+func (c1 *topValueAccumulatingCounter) Minus(value accumulatingCounter) {
+	c2 := value.(*topValueAccumulatingCounter)
+	// c1.latSum -= c2.latSum
+	// c1.lonSum -= c2.lonSum
+	c1.count -= c2.count
+}
+
+func (c *topValueAccumulatingCounter) String() string {
+	return fmt.Sprintf("%f %f %d", c.lat, c.lng, c.count)
+}
+
+
+
+
 // Single value counter.
 func newSingleValueAccumulatingCounter(point Point) accumulatingCounter {
 	return &singleValueAccumulatingCounter{point.Lat(), point.Lon(), 1}
