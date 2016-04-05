@@ -117,6 +117,7 @@ type accumulatingCounter interface {
 type topValueAccumulatingCounter struct {
 	lat float64
 	lng float64
+	Id string
 	count  int
 }
 
